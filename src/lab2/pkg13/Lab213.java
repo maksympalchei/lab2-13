@@ -77,12 +77,16 @@ public class Lab213 {
     private List<MusicalInstrument> cart;
 
     interface MusicalInstrument {
+
         void play();
+
         double getPrice();
+
         String getBrand();
     }
 
     class Guitar implements MusicalInstrument {
+
         private String brand;
         private double price;
 
@@ -111,6 +115,7 @@ public class Lab213 {
     }
 
     class Piano implements MusicalInstrument {
+
         private String brand;
         private double price;
 
@@ -139,9 +144,16 @@ public class Lab213 {
     }
 
     public void addToCart(MusicalInstrument instrument) {
+        Runnable logAddToCart = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Інструмент '" + instrument.getBrand() + "' був доданий у кошик.");
+            }
+        };
         getCart().add(instrument);
         getInventory().remove(instrument);
         System.out.println("Інструмент додано в кошик.");
+        logAddToCart.run();
     }
 
     public void removeFromCart(MusicalInstrument instrument) {
@@ -162,48 +174,54 @@ public class Lab213 {
         try (Scanner scanner = new Scanner(System.in)) {
             Lab213 shop = new Lab213();
             shop.setBalance(3000);
-            
+
             shop.setName("My Musical Instrument Shop");
-            
+
             Guitar guitar1 = shop.new Guitar();
             guitar1.setBrand("Fender");
             guitar1.setPrice(599.99);
-            
+
             Guitar guitar2 = shop.new Guitar();
             guitar2.setBrand("Gibson");
             guitar2.setPrice(899.99);
-            
+
             Piano piano1 = shop.new Piano();
             piano1.setBrand("Yamaha");
             piano1.setPrice(2999.99);
-            
+
             Piano piano2 = shop.new Piano();
             piano2.setBrand("Steinway & Sons");
             piano2.setPrice(8999.99);
-            
+
             shop.setInventory(new ArrayList<>());
             shop.getInventory().add(guitar1);
             shop.getInventory().add(guitar2);
             shop.getInventory().add(piano1);
             shop.getInventory().add(piano2);
-            
+
             shop.setCart(new ArrayList<>());
-            
+
             int choice;
             do {
                 try {
-                    System.out.println("\nМеню:");
-                    System.out.println("1. Переглянути інвентар магазину");
-                    System.out.println("2. Додати інструмент у кошик");
-                    System.out.println("3. Розрахувати загальну вартість покупок у кошику");
-                    System.out.println("4. Придбати все з кошику");
-                    System.out.println("0. Вийти");
-                    
+                    class Menu {
+                        public void display() {
+                            System.out.println("\nМеню:");
+                            System.out.println("1. Переглянути інвентар магазину");
+                            System.out.println("2. Додати інструмент у кошик");
+                            System.out.println("3. Розрахувати загальну вартість покупок у кошику");
+                            System.out.println("4. Придбати все з кошику");
+                            System.out.println("0. Вийти");
+                        }
+                    }
+                    Menu menu = new Menu();
+                    menu.display();
                     System.out.print("Виберіть опцію: ");
                     choice = scanner.nextInt();
-                    
+
                     switch (choice) {
-                        case 1 -> shop.printInventory();
+                        case 1 ->
+                            shop.printInventory();
                         case 2 -> {
                             shop.printInventory();
                             System.out.print("Введіть номер інструменту, який ви хочете додати у кошик: ");
@@ -226,13 +244,13 @@ public class Lab213 {
                         case 4 -> {
                             if (!shop.getCart().isEmpty()) {
                                 if (shop.getBalance() >= shop.calculateTotalPriceInCart()) {
-                                    int price=0;
+                                    int price = 0;
                                     for (MusicalInstrument instrument : new ArrayList<>(shop.getCart())) {
                                         shop.removeFromCart(instrument);
-                                        price+=instrument.getPrice();
+                                        price += instrument.getPrice();
                                     }
                                     System.out.println("Ви успішно придбали все з кошику.");
-                                    shop.balance-=price;
+                                    shop.balance -= price;
                                 } else {
                                     System.out.println("У вас недостатньо грошей для придбання цього товару.");
                                     for (MusicalInstrument instrument : shop.getCart()) {
@@ -243,9 +261,12 @@ public class Lab213 {
                             } else {
                                 System.out.println("Кошик покупок пустий.");
                             }
+
                         }
-                        case 0 -> System.out.println("До побачення!");
-                        default -> System.out.println("Неправильний вибір. Будь ласка, спробуйте знову.");
+                        case 0 ->
+                            System.out.println("До побачення!");
+                        default ->
+                            System.out.println("Неправильний вибір. Будь ласка, спробуйте знову.");
                     }
                 } catch (InputMismatchException e) {
                     System.out.println("Помилка: Введено некоректне значення. Будь ласка, введіть число.");
@@ -260,7 +281,7 @@ public class Lab213 {
         System.out.println("\nМузичні інструменти в наявності:");
         for (int i = 0; i < getInventory().size(); i++) {
             MusicalInstrument instrument = getInventory().get(i);
-            System.out.println(i + ". " + instrument.getClass().getSimpleName() + " '" + instrument.getBrand()+"' " + ": " + instrument.getPrice());
+            System.out.println(i + ". " + instrument.getClass().getSimpleName() + " '" + instrument.getBrand() + "' " + ": " + instrument.getPrice());
         }
         System.out.println("Ваш баланс: " + getBalance());
     }
