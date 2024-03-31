@@ -20,61 +20,66 @@ public class Lab213 {
      * @return the name
      */
     public String getName() {
-        return name;
+        return info.name;
     }
 
     /**
      * @param name the name to set
      */
     public void setName(String name) {
-        this.name = name;
+        this.info.name = name;
     }
 
     /**
      * @return the balance
      */
     public double getBalance() {
-        return balance;
+        return info.balance;
     }
 
     /**
      * @param balance the balance to set
      */
     public void setBalance(double balance) {
-        this.balance = balance;
+        this.info.balance = balance;
     }
 
     /**
      * @return the inventory
      */
     public List<MusicalInstrument> getInventory() {
-        return inventory;
+        return info.inventory;
     }
 
     /**
      * @param inventory the inventory to set
      */
     public void setInventory(List<MusicalInstrument> inventory) {
-        this.inventory = inventory;
+        this.info.inventory = inventory;
     }
 
     /**
      * @return the cart
      */
     public List<MusicalInstrument> getCart() {
-        return cart;
+        return info.cart;
     }
 
     /**
      * @param cart the cart to set
      */
     public void setCart(List<MusicalInstrument> cart) {
-        this.cart = cart;
+        this.info.cart = cart;
     }
-    private String name;
-    private double balance;
-    private List<MusicalInstrument> inventory;
-    private List<MusicalInstrument> cart;
+    Info info = new Info();
+
+    static class Info {
+
+        private String name;
+        private double balance;
+        private List<MusicalInstrument> inventory;
+        private List<MusicalInstrument> cart;
+    }
 
     interface MusicalInstrument {
 
@@ -184,7 +189,14 @@ public class Lab213 {
             Guitar guitar2 = shop.new Guitar();
             guitar2.setBrand("Gibson");
             guitar2.setPrice(899.99);
-
+            Guitar guitar3 = shop.new Guitar(){
+                @Override
+                public String getBrand()
+                {
+                  return "У цієї гітари бренду нема";
+                }
+            };
+            guitar3.setPrice(20.00); 
             Piano piano1 = shop.new Piano();
             piano1.setBrand("Yamaha");
             piano1.setPrice(2999.99);
@@ -198,13 +210,14 @@ public class Lab213 {
             shop.getInventory().add(guitar2);
             shop.getInventory().add(piano1);
             shop.getInventory().add(piano2);
-
+            shop.getInventory().add(guitar3);
             shop.setCart(new ArrayList<>());
 
             int choice;
             do {
                 try {
                     class Menu {
+
                         public void display() {
                             System.out.println("\nМеню:");
                             System.out.println("1. Переглянути інвентар магазину");
@@ -250,7 +263,7 @@ public class Lab213 {
                                         price += instrument.getPrice();
                                     }
                                     System.out.println("Ви успішно придбали все з кошику.");
-                                    shop.balance -= price;
+                                    shop.info.balance -= price;
                                 } else {
                                     System.out.println("У вас недостатньо грошей для придбання цього товару.");
                                     for (MusicalInstrument instrument : shop.getCart()) {
